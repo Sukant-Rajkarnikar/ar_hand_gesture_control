@@ -1,15 +1,17 @@
 import cv2
 
-import math_functions 
+import math_functions
+
 
 def spawn_item(posx, posy, frame, ball_radius):
     cv2.circle(frame, (posx, posy), ball_radius, (0, 255, 0), 2)
+
 
 def spawn_cube(frame, cx, cy, size, color=(0, 255, 255)):
     # 1. Perspective offset for the back face
     # We shift it up and to the right by half the size to simulate depth
     depth = size // 2
-    
+
     # 2. Define the 4 corners of the FRONT face
     f_tl = (cx - size, cy - size)  # Front Top-Left
     f_tr = (cx + size, cy - size)  # Front Top-Right
@@ -42,32 +44,48 @@ def spawn_cube(frame, cx, cy, size, color=(0, 255, 255)):
     cv2.line(frame, f_br, b_br, color, thickness)
     cv2.line(frame, f_bl, b_bl, color, thickness)
 
+
 def finger_point(index_fin, mid_fin, ring_fin, pinky_fin, thumb):
-    if index_fin > 55 and mid_fin < 55 and ring_fin < 55 and pinky_fin < 55 and thumb < 60:
+    if (
+        index_fin > 55
+        and mid_fin < 55
+        and ring_fin < 55
+        and pinky_fin < 55
+        and thumb < 60
+    ):
         return True
     return False
+
 
 def fist(index_fin, mid_fin, ring_fin, pinky_fin):
     if index_fin < 55 and mid_fin < 55 and ring_fin < 55 and pinky_fin < 55:
         return True
     return False
 
+
 def two_fingers(index_fin, mid_fin, ring_fin, pinky_fin):
     if index_fin > 55 and mid_fin > 55 and ring_fin < 55 and pinky_fin < 55:
         return True
     return False
 
+
 def is_pinching(pixel_points):
-    index_thumb_distance = math_functions.get_euclidean_distance(pixel_points[8], pixel_points[4])
+    index_thumb_distance = math_functions.get_euclidean_distance(
+        pixel_points[8], pixel_points[4]
+    )
     if index_thumb_distance < 55:
         return True
     return False
 
+
 def is_zoom_in(pixel_points):
-    index_thumb_distance = math_functions.get_euclidean_distance(pixel_points[8], pixel_points[4])
+    index_thumb_distance = math_functions.get_euclidean_distance(
+        pixel_points[8], pixel_points[4]
+    )
     if index_thumb_distance < 55:
         return True
     return False
+
 
 def get_pinch_zoom_distance(pixel_points):
     mid_fin = math_functions.get_euclidean_distance(pixel_points[12], pixel_points[1])
@@ -77,5 +95,5 @@ def get_pinch_zoom_distance(pixel_points):
 
     if mid_fin < 55 and ring_fin < 55 and pinky_fin < 55 and thumb > 60:
         return math_functions.get_euclidean_distance(pixel_points[8], pixel_points[4])
-    
+
     return None
